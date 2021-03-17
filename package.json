@@ -1,0 +1,15 @@
+{
+  "name": "major-2",
+  "version": "1.0.0",
+  "description": "",
+  "main": "simpleChain.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Siddarth Jha",
+  "license": "ISC",
+  "dependencies": {
+    "crypto-js": "^4.0.0",
+    "level": "^6.0.1"
+  }
+}
