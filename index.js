@@ -1,25 +1,39 @@
-const Block = require('./simpleChain.js');
-const Blockchain = require('./simpleChain.js');
+const Block = require('./Block.js');
+const Blockchain = require('./Blockchain.js');
 
 //Create new blockchain
 const myBlockChain = new Blockchain.Blockchain();    
 
+var x;
+myBlockChain.getBlockHeight()
+.then(height => {
+  x = height;
+  x++;
+  console.log(`Height retrieved ${x}`);
+})
+.catch(err => {
+  x = 0; 
+});
+
+
 //Adding Blocks to chain
 (function theLoop (i) {
-    setTimeout(function () {
-        let blockTest = new Block.Block("Test Block - " + (i + 1));
-        myBlockChain.addBlock(blockTest).then((result) => {
-            //console.log(result);
-            i++;
-            if (i < 11) theLoop(i);
-        });
-    }, 200);
-  })(0);
+  setTimeout(function () {
+    let blockTest = new Block.Block("Test Block - " + x);
+    myBlockChain.addBlock(blockTest)
+    .then((result) => {
+      //console.log(result);
+      i++;
+      if (i < 11) theLoop(i);
+    });
+    x++;
+  }, 200);
+})(0);
 
 //Read the chain
-setTimeout(function () {
+setTimeout(async function () {
     console.log("Reading Blockchain...");
-    myBlockChain.chain.readChain();
+    await myBlockChain.chain.readChain();
 },8000);
 
 //Validate Chain
@@ -33,32 +47,3 @@ setTimeout(function () {
         }
     });
 },10000);
-
-
-
-/*
-const Blockchain = require('./blockchain.js');
-const blockchainData = require('./blockchainData.js');
-
-const testBlockchain = new Blockchain();
-
-/*
-(function populateTestBlockchain(index) {
-  setTimeout(() => {
-    testBlockchain.addBlock(`TEST BLOCK #${index}`).then(() => {
-      console.log(`ADDED TEST BLOCK #${index + 1}`);
-
-      if (++index < 10) {
-        populateTestBlockchain(index);
-      }
-    });
-  }, 100);
-}(0));
-*/
-
-
-//testBlockchain.addBlock('TEST BLOCK').then(block => console.log(block));
-
-
-//blockchainData.getChainData()
-  //.then(chainData => console.log(chainData));

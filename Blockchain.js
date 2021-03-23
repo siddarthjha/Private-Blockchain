@@ -1,15 +1,6 @@
 const SHA256 = require('crypto-js/sha256');
 const LevelSandboxClass = require('./levelSandbox.js');
-
-class Block {
-	constructor(data) {
-     this.hash = "",
-     this.height = 0,
-     this.body = data,
-     this.time = 0,
-     this.previousBlockHash = ""
-    }
-}
+const BlockClass = require('./Block.js');
 
 class Blockchain {
     constructor() {
@@ -17,8 +8,8 @@ class Blockchain {
         this.addGenesisBlock();
     }
   
-    addGenesisBlock() {
-        let genBlock = new Block("First block in the chain - Genesis block");
+     addGenesisBlock() {
+        let genBlock = new BlockClass.Block("First block in the chain - Genesis block");
         genBlock.time = new Date().getTime().toString().slice(0,-3);
         genBlock.previousBlockHash = '';
         genBlock.hash = SHA256(JSON.stringify(genBlock)).toString();
@@ -45,10 +36,10 @@ class Blockchain {
             })
             .then(height => {
                 //Set height of new block
-                newBlock.height = height;
+                newBlock.height = height + 1;
                 newBlock.time = new Date().getTime().toString().slice(0,-3);
                 //Get Previous block
-                return this.getBlock(height - 1);
+                return this.getBlock(height);
             })
             .then(prevBlock => {
                 //Set previous block hash of new block
@@ -92,7 +83,7 @@ class Blockchain {
             this.chain.getLevelDBData(blockHeight)
             .then(curblock => {
                 if (curblock == undefined) {
-                    resolve(value);
+                    resolve(curblock);
                 } else {
                     //console.log(JSON.parse(JSON.stringify(value)));
                     resolve(JSON.parse(JSON.stringify(curblock)));
@@ -143,7 +134,7 @@ class Blockchain {
                     console.log(`Empty Chain`);
                     resolve(false);
                 } else {
-                    chainLength = height - 1;
+                    chainLength = height;
                     //console.log(`There are ${height} blocks in this Blockchain.`);
                     (async function loop() {  
                         for (i = 0; i <= (chainLength - 1); i++) {
@@ -189,5 +180,5 @@ class Blockchain {
         }); 
     }
 }
-module.exports.Block = Block;
+
 module.exports.Blockchain = Blockchain;
