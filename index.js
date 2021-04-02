@@ -4,29 +4,21 @@ const Blockchain = require('./Blockchain.js');
 //Create new blockchain
 const myBlockChain = new Blockchain.Blockchain();    
 
-var x;
-myBlockChain.getBlockHeight()
-.then(height => {
-  x = height;
-  x++;
-  console.log(`Height retrieved ${x}`);
-})
-.catch(err => {
-  x = 0; 
-});
-
-
 //Adding Blocks to chain
 (function theLoop (i) {
   setTimeout(function () {
-    let blockTest = new Block.Block("Test Block - " + x);
-    myBlockChain.addBlock(blockTest)
-    .then((result) => {
-      //console.log(result);
-      i++;
-      if (i < 11) theLoop(i);
+    myBlockChain.getBlockHeight()
+    .then(height => {
+      let blockTest = new Block.Block("Test Block - " + ++height);
+      myBlockChain.addBlock(blockTest)
+      .then((result) => {
+        i++;
+        if (i < 10) theLoop(i);
+      });
+    })
+    .catch(err => {
+      console.log(`Error: ${err}`);
     });
-    x++;
   }, 200);
 })(0);
 
@@ -34,7 +26,7 @@ myBlockChain.getBlockHeight()
 setTimeout(async function () {
     console.log("Reading Blockchain...");
     await myBlockChain.chain.readChain();
-},8000);
+},5000);
 
 //Validate Chain
 setTimeout(function () {
@@ -46,4 +38,4 @@ setTimeout(function () {
             console.log ("Errors in Blockchain validation.");
         }
     });
-},10000);
+},8000);

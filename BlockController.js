@@ -8,14 +8,14 @@ class BlockController {
         this.app = app;
         this.blockchain = new BlockchainClass.Blockchain();
         this.EMPTY_HEIGHT = -1;
-        this.UNKNOWN_ERROR_MSG = 'Somethng bad happened ಥ_ಥ, see server logs';
+        this.UNKNOWN_ERROR_MSG = 'Somethng bad happened, see server logs';
         this.getBlockResponse = block => ({error: false, block});
         this.getErrorResponse = message => ({error: true, message});
         this.convertHeightToInt = (req, res, next) => {
             req.params.height = parseInt(req.params.height, 10);
             next();
         };
-        //this.initializeMockData();
+        this.initializeMockData();
         this.getBlockByIndex();
         this.postNewBlock();
     }
@@ -76,27 +76,20 @@ class BlockController {
 
     initializeMockData() {
         let bc = this.blockchain;
-        var x;
-        bc.getBlockHeight()
-        .then(height => {
-          x = height;
-          x++;
-          console.log(`Height retrieved ${x}`);
-        })
-        .catch(err => {
-          x = 0; 
-        });
-        //Adding Blocks to chain
         (function theLoop (i) {
           setTimeout(function () {
-            let blockTest = new BlockClass.Block("Test Block - " + x);
-            bc.addBlock(blockTest)
-            .then((result) => {
-              //console.log(result);
-              i++;
-              if (i < 10) theLoop(i);
+            bc.getBlockHeight()
+            .then(height => {
+                let blockTest = new BlockClass.Block("Test Block - " + ++height);
+                bc.addBlock(blockTest)
+                .then((result) => {
+                  i++;
+                  if (i < 10) theLoop(i);
+                });
+            })
+            .catch(err => {
+                console.log(`Error: ${err}`);
             });
-            x++;
           }, 200);
         })(0);
     }
